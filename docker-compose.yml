@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - voxify-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - voxify-network
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+networks:
+  voxify-network:
+    driver: bridge
